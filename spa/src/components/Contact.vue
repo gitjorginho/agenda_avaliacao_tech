@@ -4,6 +4,7 @@
       :loading="loading_data_table"
       :headers="headers"
       :items="desserts"
+      :search="search"
       sort-by="corporate_name"
       class="elevation-1"
       :footer-props="{
@@ -12,11 +13,22 @@
         itemsPerPageText: 'contatos por pagina',
       }"
     >
+
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>Contatos</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
+          <v-card-title>
+            <v-text-field
+              v-model="search"
+              append-icon="mdi-magnify"
+              label="Search"
+              single-line
+              hide-details
+            ></v-text-field>
+          </v-card-title>
+
           <v-dialog v-model="dialog" max-width="800px" width="500">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -129,6 +141,7 @@
 import service from "./service";
 export default {
   data: () => ({
+    search: "",
     clear_attach: 0,
     loading_save: false,
     loading_data_table: false,
@@ -137,6 +150,9 @@ export default {
     headers: [
       { align: "start", sortable: false, text: "Nome", value: "name" },
       { text: "Idade", value: "age" },
+      { text: "Telefone1", value: "telephones[0].telephone" },
+      { text: "Telefone2", value: "telephones[1].telephone" },
+      { text: "Telefone3", value: "telephones[2].telephone" },
       { text: "", value: "actions", sortable: false },
     ],
     desserts: [],
@@ -177,6 +193,7 @@ export default {
   },
 
   methods: {
+    
     initialize() {
       this.loading_data_table = true;
       service.getAll().then((response) => {

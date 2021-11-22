@@ -8,7 +8,7 @@ use App\Mail\ContactMail;
 use App\Telephone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-
+use Illuminate\Support\Facades\Log;
 class ContactController extends Controller
 {
     /**
@@ -88,7 +88,10 @@ class ContactController extends Controller
         }
 
         $contact->delete();
-
+        
+        
+        Log::info('Contato Apagado:',[$contact]);
+        
         return response()->json($contact);
     }
 }
