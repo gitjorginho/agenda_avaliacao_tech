@@ -15,7 +15,7 @@ class Contact extends Model
     ];
 
 
-    public function telephone(){
+    public function telephones(){
         return $this->HasMany(Telephone::class);
     }
 

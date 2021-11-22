@@ -18,7 +18,7 @@ class ContactController extends Controller
      */
     public function index()
     {
-        $contacts = Contact::with('telephone')->get();
+        $contacts = Contact::with('telephones')->get();
         return response()->json($contacts);
     }
 
@@ -30,18 +30,19 @@ class ContactController extends Controller
      */
     public function store(ContactRequest $request)
     {
+    
         $contact = Contact::create($request->all());
-        
+
         $telephones = json_decode($request->telephones);
         
-        foreach($telephones as $number){
-            Telephone::create(['telephone'=>$number, 'contact_id'=>$contact->id ]);
-        }                   
-        
-        $contact = Contact::with('telephone')->find($contact->id);
+        if(!empty($telephones)){
+            foreach ($telephones as $number) {
+            Telephone::create(['telephone' => $number->telephone, 'contact_id' => $contact->id]);
+        }
+    }
+            $contact = Contact::with('telephones')->find($contact->id);
         return response()->json($contact);
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -52,19 +53,24 @@ class ContactController extends Controller
      */
     public function update(ContactRequest $request, Contact $contact)
     {
-        $contact->update($request->all());
         
-        $telephones = Telephone::where('contact_id',$contact->id)->get();
-        foreach($telephones as $telephone){
+        $contact->update($request->all());
+        $telephones = Telephone::where('contact_id', $contact->id)->get();
+
+        foreach ($telephones as $telephone) {
             $telephone->delete();
         }
-               
-        $telephones = json_decode($request->telephones);
-        foreach($telephones as $number){
-            Telephone::create(['telephone'=>$number, 'contact_id'=>$contact->id ]);
-        }                     
         
-        $contact = Contact::with('telephone')->find($contact->id);
+       $telephones = json_decode($request->telephones);
+         
+        foreach ($telephones as $number) {
+                if(!empty($number->telephone)){
+                    Telephone::create(['telephone' => $number->telephone, 'contact_id' => $contact->id]);    
+                }
+                
+        }
+
+        $contact = Contact::with('telephones')->find($contact->id);
         return response()->json($contact);
     }
 
@@ -76,14 +82,12 @@ class ContactController extends Controller
      */
     public function destroy(Contact $contact)
     {
-        $telephones = Telephone::where('contact_id',$contact->id)->get();
-        foreach($telephones as $telephone){
+        $telephones = Telephone::where('contact_id', $contact->id)->get();
+        foreach ($telephones as $telephone) {
             $telephone->delete();
         }
 
         $contact->delete();
-
-        
 
         return response()->json($contact);
     }

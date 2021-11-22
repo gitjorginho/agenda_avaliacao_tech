@@ -50,22 +50,34 @@
                       <v-col
                         ><v-text-field
                           dense
-                          v-model="editedItem.idade"
-                          label="Email"
+                          v-model="editedItem.age"
+                          label="Idade"
                         ></v-text-field
                       ></v-col>
                     </v-row>
-                    <v-row>
-                      <v-col
-                        ><v-text-field
-                          v-mask="'(##)#####-####'"
-                          dense
-                          v-model="editedItem.telephone"
-                          label="Telefone"
-                        ></v-text-field
-                      ></v-col>
-                    </v-row>
-                    
+                    <div
+                      v-for="telephone in editedItem.telephones"
+                      :key="telephone.id"
+                    >
+                      <v-row>
+                        <v-col
+                          ><v-text-field
+                            v-mask="'(##)#####-####'"
+                            dense
+                            v-model="telephone.telephone"
+                            label="Telefone"
+                          ></v-text-field
+                        ></v-col>
+                      </v-row>
+                    </div>
+                    <v-btn
+                      class="mx-2"
+                      dark
+                      color="indigo"
+                      @click="add_telephone()"
+                    >
+                      <v-icon dark> mdi-plus </v-icon>Telefone
+                    </v-btn>
                   </v-form>
                 </v-container>
               </v-card-text>
@@ -124,9 +136,7 @@ export default {
     dialogDelete: false,
     headers: [
       { align: "start", sortable: false, text: "Nome", value: "name" },
-      { text: "Email", value: "email" },
-      { text: "Telefone", value: "telephone" },
-      { text: "Menssagem", value: "message" },
+      { text: "Idade", value: "age" },
       { text: "", value: "actions", sortable: false },
     ],
     desserts: [],
@@ -134,25 +144,19 @@ export default {
     editedItem: {
       id: "",
       name: "",
-      email: "",
-      telephone: "",
-      message: "",
-      file: "",
+      age: "",
     },
     defaultItem: {
       id: "",
       name: "",
-      email: "",
-      telephone: "",
-      message: "",
-      file: "",
+      age: "",
     },
   }),
 
   computed: {
     formTitle() {
       if (this.editedIndex === -1) {
-         return "Novo Contato";
+        return "Novo Contato";
       } else {
         return "Atualizar Contato";
       }
@@ -219,21 +223,24 @@ export default {
       });
     },
     save() {
-      
       if (this.editedIndex > -1) {
         //update
         this.loading_save = true;
         let indice = this.editedIndex;
-
+        // let array_telephones = []
+        console.log(this.editedItem);
         let form = new FormData();
         for (let [key, value] of Object.entries(this.editedItem)) {
           form.append(key, value);
         }
+        form.delete("telephones");
+        form.append("telephones", JSON.stringify(this.editedItem.telephones));
+
         service
           .update(form)
           .then((response) => {
-            this.loading_save = false
-            this.clear_attach++  
+            this.loading_save = false;
+            this.clear_attach++;
             this.$swal.fire({
               position: "top-end",
               icon: "success",
@@ -261,8 +268,8 @@ export default {
         service
           .store(form)
           .then((response) => {
-            this.loading_save = false
-            this.clear_attach++  
+            this.loading_save = false;
+            this.clear_attach++;
             this.desserts.push(response.data);
 
             this.$swal.fire({
@@ -281,8 +288,8 @@ export default {
           });
       }
     },
-    attachment(file) {
-      this.editedItem.file = file;
+    add_telephone() {
+      this.editedItem.telephones.push({ telephone: "" });
     },
     errors(errors) {
       let html = "";
