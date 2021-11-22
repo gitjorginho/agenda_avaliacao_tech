@@ -50,7 +50,7 @@
                       <v-col
                         ><v-text-field
                           dense
-                          v-model="editedItem.email"
+                          v-model="editedItem.idade"
                           label="Email"
                         ></v-text-field
                       ></v-col>
@@ -65,27 +65,7 @@
                         ></v-text-field
                       ></v-col>
                     </v-row>
-                    <v-row>
-                      <v-col>
-                        <v-file-input
-                          dense
-                          truncate-length="15"
-                          @change="attachment"
-                          :key="clear_attach"
-                        ></v-file-input>
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col>
-                        <v-textarea
-                          dense
-                          clearable
-                          clear-icon="mdi-close-circle"
-                          label="Menssagem"
-                          v-model="editedItem.message"
-                        ></v-textarea>
-                      </v-col>
-                    </v-row>
+                    
                   </v-form>
                 </v-container>
               </v-card-text>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Contact;
 use App\Http\Requests\ContactRequest;
 use App\Mail\ContactMail;
+use App\Telephone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -17,7 +18,7 @@ class ContactController extends Controller
      */
     public function index()
     {
-        $contacts = Contact::all( "id","name", "email","telephone","message");
+        $contacts = Contact::with('telephone')->get();
         return response()->json($contacts);
     }
 
@@ -29,12 +30,15 @@ class ContactController extends Controller
      */
     public function store(ContactRequest $request)
     {
-
-        $file = $request->file->store('file');
-
-        $contact = Contact::create(array_merge($request->all(), ['file' => $file,'ip'=>$request->ip()]));
-        Mail::send(new ContactMail($contact));
-
+        $contact = Contact::create($request->all());
+        
+        $telephones = json_decode($request->telephones);
+        
+        foreach($telephones as $number){
+            Telephone::create(['telephone'=>$number, 'contact_id'=>$contact->id ]);
+        }                   
+        
+        $contact = Contact::with('telephone')->find($contact->id);
         return response()->json($contact);
     }
 
@@ -48,21 +52,19 @@ class ContactController extends Controller
      */
     public function update(ContactRequest $request, Contact $contact)
     {
+        $contact->update($request->all());
         
-        if($request->hasFile('file')){
-            $file = $request->file->store('file');
-              $request->merge(['file'=>$file]);
-
-              $contact->update(array_merge($request->all(),['file'=>$file,'ip'=>$request->ip()]));
-        }else{
-            unset($request->file);
-            $contact->update(array_merge($request->all(),['ip'=>$request->ip()]));
+        $telephones = Telephone::where('contact_id',$contact->id)->get();
+        foreach($telephones as $telephone){
+            $telephone->delete();
         }
-         
+               
+        $telephones = json_decode($request->telephones);
+        foreach($telephones as $number){
+            Telephone::create(['telephone'=>$number, 'contact_id'=>$contact->id ]);
+        }                     
         
-        
-        Mail::send(new ContactMail($contact));
-        
+        $contact = Contact::with('telephone')->find($contact->id);
         return response()->json($contact);
     }
 
@@ -74,7 +76,15 @@ class ContactController extends Controller
      */
     public function destroy(Contact $contact)
     {
+        $telephones = Telephone::where('contact_id',$contact->id)->get();
+        foreach($telephones as $telephone){
+            $telephone->delete();
+        }
+
         $contact->delete();
+
+        
+
         return response()->json($contact);
     }
 }
