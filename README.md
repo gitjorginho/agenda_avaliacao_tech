@@ -1,4 +1,4 @@
-1. - git clone git@github.com:gitjorginho/TestTecnicoPHPJorgeAlanSantos.git agenda
+1. - git clone https://github.com/gitjorginho/agenda_avaliacao_tech agenda
 
 1. - cd agenda
 
@@ -8,7 +8,7 @@
 
 5- no terminal execute `php artisan key:generate `
 
-6- cria uma base de dados chamada laravel
+6- cria uma base de dados mysql chamada laravel 
 
 7- no arquivo env configure o banco
 
@@ -28,26 +28,6 @@
 
 9- no terminal execute `php artisan db:seed`
 
-10- cofigura no arquivo .env com os dados de smtp
-
-    MAIL\_MAILER=smtp
-
-    MAIL\_HOST=smtp.mailtrap.io
-
-    MAIL\_PORT=2525
-
-    MAIL\_USERNAME=null
-
-    MAIL\_PASSWORD=null
-
-    MAIL\_ENCRYPTION=null
-
-    MAIL\_FROM\_ADDRESS=null
-
-    MAIL\_FROM\_NAME="${APP\_NAME}"
-
-    EMAIL=     #email que vai receber os contatos
-
 11- no terminal execute `php artisan serve`
 
 12- em outro instacia do terminal
@@ -59,11 +39,6 @@
 11- npm run serve
 
 Pronto provavelmente o servidor abrirar em http://localhost:8080/
-
-
-Para realizar os testes unitarios
-
-1. - no terminal execute `php artisan test`
 
 
 *Se o dominio do servidor for diferente de  http://127.0.0.1:8000
