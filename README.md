@@ -1,8 +1,8 @@
 1. - git clone https://github.com/gitjorginho/agenda_avaliacao_tech agenda
 
-1. - cd agenda
+2. - cd agenda
 
-1. composer install
+3. composer install
 
 4- copie o araquivo .env.example e renomei para .env
 
@@ -26,17 +26,15 @@
 
 8- no terminal execute `php artisan migrate`
 
-9- no terminal execute `php artisan db:seed`
+9- no terminal execute `php artisan serve`
 
-11- no terminal execute `php artisan serve`
+10- em outro instacia do terminal
 
-12- em outro instacia do terminal
+11- entra na pasta spa  `cd agenda\spa`
 
-9- entra na pasta spa  `cd agenda\spa`
+12- no terminal execute `npm i`
 
-10- no terminal execute `npm i`
-
-11- npm run serve
+13- npm run serve
 
 Pronto provavelmente o servidor abrirar em http://localhost:8080/
 
